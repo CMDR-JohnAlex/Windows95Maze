@@ -91,10 +91,6 @@ float lastX = SCR_WIDTH / 2.0f;
 float lastY = SCR_HEIGHT / 2.0f;
 bool firstMouse = true;
 
-// Maze
-const int mazeWidth = 10;
-const int mazeLength = 10;
-
 
 
 // Callback functions
