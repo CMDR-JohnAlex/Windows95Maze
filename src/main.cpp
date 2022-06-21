@@ -620,17 +620,6 @@ int main(int argc, char* argv[]) {
 				}
 			}
 		}
-		
-		//// Render walls
-		//glBindTexture(GL_TEXTURE_2D, wallTexture);
-		//for (int i = 0; i < wallPositions.size(); i++) {
-		//	// Calculate the model matrix for each object and pass it to shader before drawing
-		//	glm::mat4 model = glm::mat4(1.0f);
-		//	model = glm::translate(model, wallPositions[i]);
-		//	ourShader.setMat4("model", model);
-
-		//	glDrawArrays(GL_TRIANGLES, 0, 36);
-		//}
 
 		// Render floor
 		glBindTexture(GL_TEXTURE_2D, floorTexture);

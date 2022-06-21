@@ -11,7 +11,8 @@
 * Location of walls, roofs and floors are made by the maps
 
 ### Removed
-* Remove some unnecessary texture binding code
+* Removed some unnecessary texture binding code
+* Removed some unused and commented out code
 
 -------------------------------------------------------------------------------------------------------------
 
