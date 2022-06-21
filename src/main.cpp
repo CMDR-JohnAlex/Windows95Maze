@@ -166,6 +166,8 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 
 
 int main(int argc, char* argv[]) {
+	// Terminal interaction
+	// --------------------
 	if (argc >= 2)
 	{
 		if (strcmp(argv[1], "-h") == 0 || strcmp(argv[1], "--help") == 0)
@@ -209,7 +211,9 @@ int main(int argc, char* argv[]) {
 		std::cout << "Please use '--help' for a list of commands\n";
 		return 1;
 	}
-
+	
+	
+	
 	// Initialize GLFW
 	// ---------------
 	if (!glfwInit()) {
@@ -587,11 +591,6 @@ int main(int argc, char* argv[]) {
 
 		// Bind textures on corresponding texture units
 		glActiveTexture(GL_TEXTURE0); // Activate the texture unit before binding
-		glBindTexture(GL_TEXTURE_2D, wallTexture);
-		glActiveTexture(GL_TEXTURE0); // Activate the texture unit before binding
-		glBindTexture(GL_TEXTURE_2D, floorTexture);
-		glActiveTexture(GL_TEXTURE0); // Activate the texture unit before binding
-		glBindTexture(GL_TEXTURE_2D, roofTexture);
 
 		// Projection matrix
 		glm::mat4 projection = glm::mat4(1.0f); // Make sure to initialize matrix to identity matrix first

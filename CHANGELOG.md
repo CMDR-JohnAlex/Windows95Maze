@@ -10,6 +10,8 @@
 * Changed from 2D squares to 3D cubes (Makes it easy to make maps)
 * Location of walls, roofs and floors are made by the maps
 
+### Removed
+* Remove some unnecessary texture binding code
 
 -------------------------------------------------------------------------------------------------------------
 
