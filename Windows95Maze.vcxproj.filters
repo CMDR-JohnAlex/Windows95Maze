@@ -151,6 +151,7 @@
     <Text Include="contrib\glm\copying.txt">
       <Filter>contrib\glm</Filter>
     </Text>
+    <Text Include="data\maps\map.txt" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="data\textures\container.jpg">

@@ -190,6 +190,7 @@
     <Text Include="contrib\glm\copying.txt" />
     <Text Include="contrib\placeHolder.txt" />
     <Text Include="data\icons\placeholder.txt" />
+    <Text Include="data\maps\map.txt" />
     <Text Include="data\models\placeholder.txt" />
     <Text Include="data\music\placeholder.txt" />
     <Text Include="data\placeHolder.txt" />

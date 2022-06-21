@@ -25,6 +25,7 @@ GLFWwindow* window;
 // ------------------------
 #include <iostream>
 #include <vector>
+#include <fstream>
 
 
 
@@ -57,18 +58,7 @@ const char* fragmentShaderSource = "#version 330 core\n"
 "}\n"
 "\0";
 
-std::vector<std::vector<int>> map{
-	{1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-	{1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-	{1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-	{1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-	{1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-	{1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-	{1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-	{1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-	{1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-	{1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
-};
+std::vector<std::vector<int>> map;
 
 
 
@@ -86,10 +76,13 @@ float lastFrame = 0.0f;
 bool KeysProcessed[1024];
 
 // Camera
-Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
+Camera camera(glm::vec3(1.0f, 0.0f, 3.0f));
 float lastX = SCR_WIDTH / 2.0f;
 float lastY = SCR_HEIGHT / 2.0f;
 bool firstMouse = true;
+
+// Map
+std::string mapFilePath = "data/maps/map.txt";
 
 
 
@@ -173,6 +166,50 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 
 
 int main(int argc, char* argv[]) {
+	if (argc >= 2)
+	{
+		if (strcmp(argv[1], "-h") == 0 || strcmp(argv[1], "--help") == 0)
+		{
+			std::cout << "Commands: \n";
+			std::cout << "-h            or --help             Help Menu\n";
+			std::cout << "-m (filepath) or --map (filepath)   Load custom map\n";
+			std::cout << "-v            or --version          Program Version\n";
+			std::cout << "-c            or --copyright        Copyright Notice\n";
+			return 0;
+		}
+
+		if (strcmp(argv[1], "-m") == 0 || strcmp(argv[1], "--map") == 0)
+		{
+			mapFilePath = argv[1];
+			return 0;
+		}
+
+		if (strcmp(argv[1], "-v") == 0 || strcmp(argv[1], "--version") == 0)
+		{
+			std::cout << "   Name: " << PROJECT_NAME << '\n';
+			std::cout << "Version: " << PROJECT_VER << '\n';
+			return 0;
+		}
+
+		if (strcmp(argv[1], "-c") == 0 || strcmp(argv[1], "--copyright") == 0)
+		{
+			std::string licenseText;
+			std::ifstream licenseFile("LICENSE");
+			if (licenseFile.fail())
+			{
+				std::cout << "Can NOT find the license! Please DO NOT remove the license from this project!!\n";
+			}
+			while (std::getline(licenseFile, licenseText))
+			{
+				std::cout << licenseText << '\n';
+			}
+			return 0;
+		}
+		std::cout << "Sorry, \"" << argv[1] << "\" is not a command!\n";
+		std::cout << "Please use '--help' for a list of commands\n";
+		return 1;
+	}
+
 	// Initialize GLFW
 	// ---------------
 	if (!glfwInit()) {
@@ -479,6 +516,53 @@ int main(int argc, char* argv[]) {
 
 
 
+	// Load map
+	// https://www.guru99.com/cpp-file-read-write-open.html
+	std::string mapData;
+	std::ifstream mapFile;
+
+	mapFile.open("data/maps/map.txt", std::ios::in);
+
+	if (!mapFile) {
+		std::cout << "ERROR::MAP::FILE_NOT_SUCCESFULLY_READ" << std::endl;
+
+		std::cout << "Assuming no map passed...\n" << "Using default map...\n" << "\n -- --------------------------------------------------- -- " << std::endl;
+		map = {
+			{1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+			{1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+			{1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+			{1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+			{1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+			{1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+			{1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+			{1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+			{1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+			{1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
+		};
+	}
+	std::cout << "Map data: \n";
+	while (std::getline(mapFile, mapData)) {
+		std::vector<int> row;
+
+		for (char& c : mapData) {
+			//if (c != ',' && c != ' ') {
+			if (c == '1' || c == '0') { // This will remove anything that is not 1 or 0, aka keeping the map data
+				row.push_back((int)c - 48);
+			}
+		}
+
+		map.push_back(row);
+	}
+
+	for (std::vector<int>& row : map) {
+		for (int& c : row) {
+			std::cout << c << ' ';
+		}
+
+		std::cout << '\n';
+	}
+	std::cout << "Map size: " << map.size() << "x" << map[0].size() << std::endl;
+	
 	// Render loop
 	// -----------
 	while (!glfwWindowShouldClose(window)) {
