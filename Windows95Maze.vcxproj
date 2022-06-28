@@ -163,7 +163,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="contrib\glad\src\glad.cpp" />
-    <ClCompile Include="src\camera\camera.cpp" />
     <ClCompile Include="src\shader\shader.cpp" />
     <ClCompile Include="src\main.cpp" />
   </ItemGroup>

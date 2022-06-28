@@ -13,6 +13,7 @@
 ### Removed
 * Removed some unnecessary texture binding code
 * Removed some unused and commented out code
+* Removed obsolete wall data
 
 -------------------------------------------------------------------------------------------------------------
 
@@ -58,11 +59,13 @@
 * Added contrib/stb/stb_image.h
 * Added data/
 * Added data/icons/
+* Added data/maps/
+* Added data/maps/map.txt
 * Added data/models/
 * Added data/music/
 * Added data/shaders/
-* Added data/shaders/transformations.vert
-* Added data/shaders/transformations.frag
+* Added data/shaders/cube.vert
+* Added data/shaders/cube.frag
 * Added data/sounds/
 * Added data/textures/
 * Added src/
@@ -72,7 +75,6 @@
 * Added src/config/
 * Added src/config/config.hpp
 * Added src/camera/
-* Added src/camera/camera.cpp
 * Added src/camera/camera.hpp
 * Added src/shader/
 * Added src/shader/shader.cpp

@@ -64,6 +64,9 @@
     <Filter Include="src\camera">
       <UniqueIdentifier>{8de83a19-04f3-453d-823c-f4fc87e731c4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="data\map">
+      <UniqueIdentifier>{afd94c28-e96e-446c-b770-10fa8075d09f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -74,9 +77,6 @@
     </ClCompile>
     <ClCompile Include="contrib\glad\src\glad.cpp">
       <Filter>contrib\glad\src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\camera\camera.cpp">
-      <Filter>src\camera</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -151,7 +151,9 @@
     <Text Include="contrib\glm\copying.txt">
       <Filter>contrib\glm</Filter>
     </Text>
-    <Text Include="data\maps\map.txt" />
+    <Text Include="data\maps\map.txt">
+      <Filter>data\map</Filter>
+    </Text>
   </ItemGroup>
   <ItemGroup>
     <Image Include="data\textures\container.jpg">
