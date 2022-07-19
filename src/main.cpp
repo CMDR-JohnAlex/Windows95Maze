@@ -179,21 +179,18 @@ int main(int argc, char* argv[]) {
 			std::cout << "-c            or --copyright        Copyright Notice\n";
 			return 0;
 		}
-
-		if (strcmp(argv[1], "-m") == 0 || strcmp(argv[1], "--map") == 0)
+		else if (strcmp(argv[1], "-m") == 0 || strcmp(argv[1], "--map") == 0)
 		{
-			mapFilePath = argv[1];
-			return 0;
+			mapFilePath = "data/maps/" + std::string(argv[2]);
+			std::cout << "New map path: " << mapFilePath << '\n';
 		}
-
-		if (strcmp(argv[1], "-v") == 0 || strcmp(argv[1], "--version") == 0)
+		else if (strcmp(argv[1], "-v") == 0 || strcmp(argv[1], "--version") == 0)
 		{
 			std::cout << "   Name: " << PROJECT_NAME << '\n';
 			std::cout << "Version: " << PROJECT_VER << '\n';
 			return 0;
 		}
-
-		if (strcmp(argv[1], "-c") == 0 || strcmp(argv[1], "--copyright") == 0)
+		else if (strcmp(argv[1], "-c") == 0 || strcmp(argv[1], "--copyright") == 0)
 		{
 			std::string licenseText;
 			std::ifstream licenseFile("LICENSE");
@@ -207,9 +204,12 @@ int main(int argc, char* argv[]) {
 			}
 			return 0;
 		}
-		std::cout << "Sorry, \"" << argv[1] << "\" is not a command!\n";
-		std::cout << "Please use '--help' for a list of commands\n";
-		return 1;
+		else
+		{
+			std::cout << "Sorry, \"" << argv[1] << "\" is not a command!\n";
+			std::cout << "Please use '--help' for a list of commands\n";
+			return 1;
+		}
 	}
 	
 	
@@ -479,9 +479,11 @@ int main(int argc, char* argv[]) {
 	std::string mapData;
 	std::ifstream mapFile;
 
-	mapFile.open("data/maps/map.txt", std::ios::in);
+	mapFile.open(mapFilePath, std::ios::in);
+	std::cout << "Map file: \"" << mapFilePath;
 
 	if (!mapFile) {
+		std::cout << "\" DOES NOT EXIST!\n";
 		std::cout << "ERROR::MAP::FILE_NOT_SUCCESFULLY_READ" << std::endl;
 
 		std::cout << "Assuming no map passed...\n" << "Using default map...\n" << "\n -- --------------------------------------------------- -- " << std::endl;
@@ -498,6 +500,8 @@ int main(int argc, char* argv[]) {
 			{1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
 		};
 	}
+	else
+		std::cout << "\"\n";
 	std::cout << "Map data: \n";
 	while (std::getline(mapFile, mapData)) {
 		std::vector<int> row;

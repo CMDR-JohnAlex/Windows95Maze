@@ -20,6 +20,8 @@ I am learning OpenGL3.3 at [LearnOpenGL.com](https://learnopengl.com/) and after
 
 This will be my first non-tutorial OpenGL project.
 
+To load a different map than `map.txt`, open a terminal and type `./Windows95Maze.exe --map mapName.txt` but replace `mapName.txt` with the map file you want to load. On Windows you may need to change `./` to `.\`.
+
 Please note, if you compile the program for yourself, make sure you move the executable to the root project directory.
 
 Pre-compiled release versions should work without moving any files.
