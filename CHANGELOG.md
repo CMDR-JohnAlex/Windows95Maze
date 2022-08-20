@@ -1,5 +1,17 @@
 # Changelog
 
+## [Unreleased]
+
+### Added
+* Added start and end markers
+
+### Changed
+* Improved far away texture resolution
+* Changed view distance to 50, 100 is big for such a small game
+
+-------------------------------------------------------------------------------------------------------------
+
+
 ## [0.4.1]
 
 ### Added

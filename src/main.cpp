@@ -76,7 +76,7 @@ float lastFrame = 0.0f;
 bool KeysProcessed[1024];
 
 // Camera
-Camera camera(glm::vec3(1.0f, 0.0f, 3.0f));
+Camera camera(glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), 180.0f);
 float lastX = SCR_WIDTH / 2.0f;
 float lastY = SCR_HEIGHT / 2.0f;
 bool firstMouse = true;
@@ -316,6 +316,15 @@ int main(int argc, char* argv[]) {
 		-0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
 		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f
 	};
+	std::vector<float> quadVertices = {
+		// positions         // texture coords
+		-0.5f, -0.5f, 0.0f,  0.0f, 0.0f,
+		 0.5f, -0.5f, 0.0f,  1.0f, 0.0f,
+		 0.5f,  0.5f, 0.0f,  1.0f, 1.0f,
+		 0.5f,  0.5f, 0.0f,  1.0f, 1.0f,
+		-0.5f,  0.5f, 0.0f,  0.0f, 1.0f,
+		-0.5f, -0.5f, 0.0f,  0.0f, 0.0f,
+	};
 
 
 
@@ -348,11 +357,38 @@ int main(int argc, char* argv[]) {
 	// Unbind VAO (It's always a good thing to unbind any buffer/array to prevent strange bugs)
 	glBindVertexArray(0);
 
+	// Vertex Array Object // Vertex Buffer Object
+	unsigned int quadVAO, quadVBO;
+	glGenVertexArrays(1, &quadVAO);
+	glGenBuffers(1, &quadVBO);
+
+	// Bind the Vertex Array Object first, then set vertex buffer(s), and then configure vertex attributes(s)
+	glBindVertexArray(quadVAO);
+
+	// Copy our vertices array in a buffer for OpenGL to use
+	glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
+	//glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, quadVertices.size() * 3 * sizeof(float), &quadVertices.front(), GL_STATIC_DRAW); // https://stackoverflow.com/questions/7173494/vbos-with-stdvector
+	// GL_STATIC_DRAW: Data will be modified once and used many times
+	// GL_DYNAMIC_DRAW: Data will be modified repeatedly and used many times
+	// GL_STREAM_DRAW: Data will be modified once and used at most a few times
+
+	// Then set our vertex attributes pointers
+	// Position attribute
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0); // Please note that we put 5 * sizeof(float) here because we have 3 floats for position and 2 for texture
+	glEnableVertexAttribArray(0);
+	// Texture coord attribute
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+	glEnableVertexAttribArray(1);
+
+	// Unbind VAO (It's always a good thing to unbind any buffer/array to prevent strange bugs)
+	glBindVertexArray(0);
+
 
 
 	// Load and create a texture
 	// -------------------------
-	unsigned int wallTexture, floorTexture, roofTexture;
+	unsigned int wallTexture, floorTexture, roofTexture, startTexture, endTexture;
 
 	// wallTexture
 	glGenTextures(1, &wallTexture);
@@ -367,7 +403,7 @@ int main(int argc, char* argv[]) {
 	// GL_CLAMP_TO_BORDER: The texture image is stretched to fill the edge of the texture and the remaining area is filled with a border color
 
 	// Set the texture filtering parameters (on the currently bound texture object)
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR); // GL_NEAREST_MIPMAP_NEAREST
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	// GL_NEAREST: The texture image is filtered by a nearest-neighbor algorithm. The texture appears blocky.
 	// GL_LINEAR: The texture image is filtered by a bilinear algorithm. The texture appears smooth.
@@ -402,7 +438,7 @@ int main(int argc, char* argv[]) {
 	// GL_CLAMP_TO_BORDER: The texture image is stretched to fill the edge of the texture and the remaining area is filled with a border color
 
 	// Set the texture filtering parameters (on the currently bound texture object)
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR); // GL_NEAREST_MIPMAP_NEAREST
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	// GL_NEAREST: The texture image is filtered by a nearest-neighbor algorithm. The texture appears blocky.
 	// GL_LINEAR: The texture image is filtered by a bilinear algorithm. The texture appears smooth.
@@ -436,7 +472,7 @@ int main(int argc, char* argv[]) {
 	// GL_CLAMP_TO_BORDER: The texture image is stretched to fill the edge of the texture and the remaining area is filled with a border color
 
 	// Set the texture filtering parameters (on the currently bound texture object)
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR); // GL_NEAREST_MIPMAP_NEAREST
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	// GL_NEAREST: The texture image is filtered by a nearest-neighbor algorithm. The texture appears blocky.
 	// GL_LINEAR: The texture image is filtered by a bilinear algorithm. The texture appears smooth.
@@ -457,6 +493,74 @@ int main(int argc, char* argv[]) {
 	}
 	stbi_image_free(data);
 
+	// startTexture
+	glGenTextures(1, &startTexture);
+	glBindTexture(GL_TEXTURE_2D, startTexture); // All upcoming GL_TEXTURE_2D operations now have effect on this texture object
+	// Set the texture wrapping parameters (on the currently bound texture object)
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT); // Set texture wrapping to GL_REPEAT (default wrapping method)
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	// Axis s, t, r are the equivalent of x, y, z in OpenGL
+	// GL_REPEAT: The default behavior for textures. Repeats the texture image
+	// GL_MIRRORED_REPEAT: The texture image is flipped and then repeated
+	// GL_CLAMP_TO_EDGE: The texture image is stretched to fill the edge of the texture
+	// GL_CLAMP_TO_BORDER: The texture image is stretched to fill the edge of the texture and the remaining area is filled with a border color
+
+	// Set the texture filtering parameters (on the currently bound texture object)
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR); // GL_NEAREST_MIPMAP_NEAREST
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	// GL_NEAREST: The texture image is filtered by a nearest-neighbor algorithm. The texture appears blocky.
+	// GL_LINEAR: The texture image is filtered by a bilinear algorithm. The texture appears smooth.
+	// GL_NEAREST_MIPMAP_NEAREST: The texture image is filtered by a nearest-neighbor algorithm. The texture appears blocky. The mipmap is also filtered by a nearest-neighbor algorithm.
+	// GL_LINEAR_MIPMAP_NEAREST: The texture image is filtered by a bilinear algorithm. The texture appears smooth. The mipmap is also filtered by a nearest-neighbor algorithm.
+	// GL_NEAREST_MIPMAP_LINEAR: The texture image is filtered by a nearest-neighbor algorithm. The texture appears blocky. The mipmap is also filtered by a bilinear algorithm.
+	// GL_LINEAR_MIPMAP_LINEAR: The texture image is filtered by a bilinear algorithm. The texture appears smooth. The mipmap is also filtered by a bilinear algorithm.
+
+	// Load image, create texture and generate mipmaps
+	stbi_set_flip_vertically_on_load(true); // Tell stb_image.h to flip loaded texture's on the y-axis. The standard OpenGL texture coordinate system is upside down. (Because texture coordinates go from 0 to 1 and not 0 to -1)
+	data = stbi_load("data/textures/start2.png", &width, &height, &nrChannels, 0);
+	if (data) {
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+		glGenerateMipmap(GL_TEXTURE_2D);
+	}
+	else {
+		std::cout << "Failed to load texture" << std::endl;
+	}
+	stbi_image_free(data);
+
+	// endTexture
+	glGenTextures(1, &endTexture);
+	glBindTexture(GL_TEXTURE_2D, endTexture); // All upcoming GL_TEXTURE_2D operations now have effect on this texture object
+	// Set the texture wrapping parameters (on the currently bound texture object)
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT); // Set texture wrapping to GL_REPEAT (default wrapping method)
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	// Axis s, t, r are the equivalent of x, y, z in OpenGL
+	// GL_REPEAT: The default behavior for textures. Repeats the texture image
+	// GL_MIRRORED_REPEAT: The texture image is flipped and then repeated
+	// GL_CLAMP_TO_EDGE: The texture image is stretched to fill the edge of the texture
+	// GL_CLAMP_TO_BORDER: The texture image is stretched to fill the edge of the texture and the remaining area is filled with a border color
+
+	// Set the texture filtering parameters (on the currently bound texture object)
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR); // GL_NEAREST_MIPMAP_NEAREST
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	// GL_NEAREST: The texture image is filtered by a nearest-neighbor algorithm. The texture appears blocky.
+	// GL_LINEAR: The texture image is filtered by a bilinear algorithm. The texture appears smooth.
+	// GL_NEAREST_MIPMAP_NEAREST: The texture image is filtered by a nearest-neighbor algorithm. The texture appears blocky. The mipmap is also filtered by a nearest-neighbor algorithm.
+	// GL_LINEAR_MIPMAP_NEAREST: The texture image is filtered by a bilinear algorithm. The texture appears smooth. The mipmap is also filtered by a nearest-neighbor algorithm.
+	// GL_NEAREST_MIPMAP_LINEAR: The texture image is filtered by a nearest-neighbor algorithm. The texture appears blocky. The mipmap is also filtered by a bilinear algorithm.
+	// GL_LINEAR_MIPMAP_LINEAR: The texture image is filtered by a bilinear algorithm. The texture appears smooth. The mipmap is also filtered by a bilinear algorithm.
+
+	// Load image, create texture and generate mipmaps
+	stbi_set_flip_vertically_on_load(true); // Tell stb_image.h to flip loaded texture's on the y-axis. The standard OpenGL texture coordinate system is upside down. (Because texture coordinates go from 0 to 1 and not 0 to -1)
+	data = stbi_load("data/textures/fin.png", &width, &height, &nrChannels, 0);
+	if (data) {
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+		glGenerateMipmap(GL_TEXTURE_2D);
+	}
+	else {
+		std::cout << "Failed to load texture" << std::endl;
+	}
+	stbi_image_free(data);
+
 
 
 	// Tell OpenGL for each sampler to which texture unit it belongs to (only has to be done once)
@@ -467,6 +571,8 @@ int main(int argc, char* argv[]) {
 	ourShader.setInt("wallTexture", 0);
 	ourShader.setInt("floorTexture", 1);
 	ourShader.setInt("roofTexture", 2);
+	ourShader.setInt("startTexture", 3);
+	ourShader.setInt("endTexture", 4);
 	// Or set it manually like so:
 	//glUniform1i(glGetUniformLocation(ourShader.ID, "wallTexture"), 0);
 	//glUniform1i(glGetUniformLocation(ourShader.ID, "floorTexture"), 1);
@@ -486,7 +592,7 @@ int main(int argc, char* argv[]) {
 		std::cout << "\" DOES NOT EXIST!\n";
 		std::cout << "ERROR::MAP::FILE_NOT_SUCCESFULLY_READ" << std::endl;
 
-		std::cout << "Assuming no map passed...\n" << "Using default map...\n" << "\n -- --------------------------------------------------- -- " << std::endl;
+		std::cout << "Assuming no map passed...\n" << "Using empty map...\n" << "\n -- --------------------------------------------------- -- " << std::endl;
 		map = {
 			{1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
 			{1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
@@ -502,13 +608,14 @@ int main(int argc, char* argv[]) {
 	}
 	else
 		std::cout << "\"\n";
+
 	std::cout << "Map data: \n";
 	while (std::getline(mapFile, mapData)) {
 		std::vector<int> row;
 
 		for (char& c : mapData) {
 			//if (c != ',' && c != ' ') {
-			if (c == '1' || c == '0') { // This will remove anything that is not 1 or 0, aka keeping the map data
+			if (c == '0' || c == '1' || c == '2' || c == '3') { // This will remove anything that is not 0, 1, 2 or 3, aka keeping the map data
 				row.push_back((int)c - 48);
 			}
 		}
@@ -554,7 +661,7 @@ int main(int argc, char* argv[]) {
 
 		// Projection matrix
 		glm::mat4 projection = glm::mat4(1.0f); // Make sure to initialize matrix to identity matrix first
-		projection = glm::perspective(glm::radians(camera.Zoom), static_cast<float>(SCR_WIDTH) / static_cast<float>(SCR_HEIGHT), 0.1f, 100.0f);
+		projection = glm::perspective(glm::radians(camera.Zoom), static_cast<float>(SCR_WIDTH) / static_cast<float>(SCR_HEIGHT), 0.1f, 50.0f);
 		ourShader.setMat4("projection", projection); // Note: Currently we set the projection matrix each frame, but since the projection matrix rarely changes it's often best practice to set it outside the main loop only once.
 
 		// View transformation
@@ -610,6 +717,37 @@ int main(int argc, char* argv[]) {
 				ourShader.setMat4("model", model);
 
 				glDrawArrays(GL_TRIANGLES, 0, 36);
+			}
+		}
+
+		// Bind the quadVAO
+		glBindVertexArray(quadVAO);
+
+		// Render start quad
+		glBindTexture(GL_TEXTURE_2D, startTexture);
+		for (int j = 0; j < map.size(); j++) {
+			for (int i = 0; i < map[0].size(); i++) {
+				if (map[j][i] == 2) {
+					glm::mat4 model = glm::mat4(1.0f);
+					model = glm::translate(model, glm::vec3(i, 0, j));
+					model = glm::rotate(model, glm::radians(static_cast<float>(glfwGetTime()) * 100.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+					ourShader.setMat4("model", model);
+					glDrawArrays(GL_TRIANGLES, 0, 6);
+				}
+			}
+		}
+
+		// Render end quad
+		glBindTexture(GL_TEXTURE_2D, endTexture);
+		for (int j = 0; j < map.size(); j++) {
+			for (int i = 0; i < map[0].size(); i++) {
+				if (map[j][i] == 3) {
+					glm::mat4 model = glm::mat4(1.0f);
+					model = glm::translate(model, glm::vec3(i, 0, j));
+					model = glm::rotate(model, glm::radians(static_cast<float>(glfwGetTime()) * 100.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+					ourShader.setMat4("model", model);
+					glDrawArrays(GL_TRIANGLES, 0, 6);
+				}
 			}
 		}
 
