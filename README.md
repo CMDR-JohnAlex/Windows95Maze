@@ -4,12 +4,11 @@
 ![GitHub watchers](https://img.shields.io/github/watchers/CMDR-JohnAlex/Windows95Maze?style=social)
 
 ![GitHub top language](https://img.shields.io/github/languages/top/CMDR-JohnAlex/Windows95Maze)
-![Lines of code](https://img.shields.io/tokei/lines/github/CMDR-JohnAlex/Windows95Maze)
 ![GitHub repo size](https://img.shields.io/github/repo-size/CMDR-JohnAlex/Windows95Maze)
+![GitHub](https://img.shields.io/github/license/CMDR-JohnAlex/Windows95Maze)
 
 ![GitHub issues](https://img.shields.io/github/issues/CMDR-JohnAlex/Windows95Maze)
 ![GitHub pull requests](https://img.shields.io/github/issues-pr/CMDR-JohnAlex/Windows95Maze)
-![GitHub](https://img.shields.io/github/license/CMDR-JohnAlex/Windows95Maze)
 
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/CMDR-JohnAlex/Windows95Maze)
 ![GitHub all releases](https://img.shields.io/github/downloads/CMDR-JohnAlex/Windows95Maze/total)
