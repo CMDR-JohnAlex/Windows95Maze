@@ -195,6 +195,7 @@
     <Text Include="data\placeHolder.txt" />
     <Text Include="data\shaders\placeholder.txt" />
     <Text Include="data\sounds\placeholder.txt" />
+    <Text Include="data\textures\Credits.txt" />
     <Text Include="data\textures\placeholder.txt" />
     <Text Include="LICENSE" />
   </ItemGroup>

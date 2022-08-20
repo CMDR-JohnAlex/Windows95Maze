@@ -154,6 +154,7 @@
     <Text Include="data\maps\map.txt">
       <Filter>data\map</Filter>
     </Text>
+    <Text Include="data\textures\Credits.txt" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="data\textures\container.jpg">

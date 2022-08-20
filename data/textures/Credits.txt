@@ -1,0 +1,12 @@
+The following files have been extracted from ssmaze.scr (version 4.0.1362.1) using ResourcesExtract (http://www.nirsoft.net/utils/resources_extract.html) with all a8 files converted to png format
+
+The files in question:
+	- ceiling.bmp
+	- ceiling2.bmp
+	- fin.png
+	- floor.bmp
+	- gl.png
+	- pic.bmp
+	- rat.png
+	- start2.png
+	- wall.bmp
