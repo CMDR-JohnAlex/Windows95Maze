@@ -76,7 +76,7 @@ float lastFrame = 0.0f;
 bool KeysProcessed[1024];
 
 // Camera
-Camera camera(glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), 180.0f);
+Camera camera(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), 45.0f);
 float lastX = SCR_WIDTH / 2.0f;
 float lastY = SCR_HEIGHT / 2.0f;
 bool firstMouse = true;
@@ -262,6 +262,8 @@ int main(int argc, char* argv[]) {
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_FRAMEBUFFER_SRGB); // Use sRGB
 	glEnable(GL_MULTISAMPLE); // Enable MSAA multisampling
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // https://www.andersriggelsen.dk/glblendfunc.php
 	glfwSwapInterval(1); // Turn on vsync for smoother rendering and so OpenGL doesn't draw faster than the monitor refresh rate. Otherwise the program will use 100% CPU and GPU
 
 
@@ -730,9 +732,12 @@ int main(int argc, char* argv[]) {
 				if (map[j][i] == 2) {
 					glm::mat4 model = glm::mat4(1.0f);
 					model = glm::translate(model, glm::vec3(i, 0, j));
-					model = glm::rotate(model, glm::radians(static_cast<float>(glfwGetTime()) * 100.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+					model = glm::inverse(glm::lookAt(glm::vec3(i, 0, j), camera.Position, glm::vec3(0.0f, 1.0f, 0.0f)));
+					model = glm::rotate(model, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+					ourShader.setBool("transparent", true);
 					ourShader.setMat4("model", model);
 					glDrawArrays(GL_TRIANGLES, 0, 6);
+					ourShader.setBool("transparent", false);
 				}
 			}
 		}
@@ -744,9 +749,11 @@ int main(int argc, char* argv[]) {
 				if (map[j][i] == 3) {
 					glm::mat4 model = glm::mat4(1.0f);
 					model = glm::translate(model, glm::vec3(i, 0, j));
-					model = glm::rotate(model, glm::radians(static_cast<float>(glfwGetTime()) * 100.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+					model = glm::rotate(model, glm::radians(static_cast<float>(glfwGetTime()) * 150.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+					ourShader.setBool("transparent", true);
 					ourShader.setMat4("model", model);
 					glDrawArrays(GL_TRIANGLES, 0, 6);
+					ourShader.setBool("transparent", false);
 				}
 			}
 		}
