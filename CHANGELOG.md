@@ -10,6 +10,7 @@
 * Changed view distance to 50, 100 is big for such a small game
 * Start and end markers are transparent
 * Start marker looks at the camera
+* Start marker has a delay when looking at the camera
 
 -------------------------------------------------------------------------------------------------------------
 

@@ -636,6 +636,14 @@ int main(int argc, char* argv[]) {
 	
 
 
+	// Create the delay
+	int frameDelay = 25;
+	std::vector<glm::vec3> lastCamPos;
+	for(int i = 0; i < frameDelay; i++)
+		lastCamPos.push_back(camera.Position);
+
+
+
 	// Render loop
 	// -----------
 	while (!glfwWindowShouldClose(window)) {
@@ -732,7 +740,7 @@ int main(int argc, char* argv[]) {
 				if (map[j][i] == 2) {
 					glm::mat4 model = glm::mat4(1.0f);
 					model = glm::translate(model, glm::vec3(i, 0, j));
-					model = glm::inverse(glm::lookAt(glm::vec3(i, 0, j), camera.Position, glm::vec3(0.0f, 1.0f, 0.0f)));
+					model = glm::inverse(glm::lookAt(glm::vec3(i, 0, j), lastCamPos[0], glm::vec3(0.0f, 1.0f, 0.0f)));
 					model = glm::rotate(model, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 					ourShader.setBool("transparent", true);
 					ourShader.setMat4("model", model);
@@ -741,6 +749,8 @@ int main(int argc, char* argv[]) {
 				}
 			}
 		}
+		lastCamPos.erase(lastCamPos.begin());
+		lastCamPos.push_back(camera.Position);
 
 		// Render end quad
 		glBindTexture(GL_TEXTURE_2D, endTexture);
